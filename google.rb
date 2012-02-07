@@ -80,4 +80,7 @@ t ||= 'Geben ist besser als nehmen'
 
 translator =  Translator.new
 translator.t(URI.escape(t))
-t.split(' ').each{|w| translator.t(w)}
+if ARGV.count > 1
+  t.split(' ').each{|w| translator.t(w)}
+end
+
