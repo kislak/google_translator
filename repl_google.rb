@@ -18,7 +18,7 @@ class Translator
   require 'net/http'
   require 'uri'
   require 'json'
-  attr_accessor :sl, :tl
+  attr_accessor :sl, :tl, :last
 
   def initialize(sl = 'auto', tl = 'ru')
     @sl = sl
@@ -31,8 +31,26 @@ class Translator
     result = ask_google(req)
     @sl = result['src'] #remember language
     print_result(result)
+    @last = text
   end
 
+  def exp(text = nil)
+    text.strip!
+    text = @last if text.empty?
+    text = URI.encode(text)
+    req = "http://translate.google.by/translate_a/ex?sl=#{@sl}&tl=#{@tl}&q=#{text}"
+    res = ask_google(req)[0][0]
+    res && res.map{|e| [e.first, e[3]]}.each do |s, translation|
+      s = s.split(/<b>|<\/b>/)
+      puts "#{s[0]}#{s[1].upcase}#{s[2]}"
+      s = translation.split(/<b>|<\/b>/)
+      puts "#{s[0]}**#{s[1].upcase}**#{s[2]}"
+      puts '-'*80
+    end
+    true
+  end
+
+  private
   def ask_google(req)
     JSON.parse(Net::HTTP.get_response('translate.google.com', req).body)
   end
@@ -71,6 +89,8 @@ class Translator
     end
   end
 end
+
+
 t = ARGV.count > 0 &&ARGV.join(' ')
 
 t ||= 'Erst die Arbeit, dann das Spiel'
@@ -88,7 +108,8 @@ loop do
   s = Readline::readline('> ')
   break if s == 'exit'
   Readline::HISTORY.push(s)
-    next if s.include?('from ') && s.gsub!(/from /, '') && translator.sl = s
-  next if s.include?('into ') && s.gsub!(/into /, '') && translator.tl = s
+  next if s.match(/^from /) && s.gsub!(/^from /, '') && translator.sl = s
+  next if s.match(/^into /) && s.gsub!(/^into /, '') && translator.tl = s
+  next if (s.match(/^exp /) || s == 'exp') && s.gsub!(/^exp/, '') && translator.exp(s)
   s.split(' ').each{|w| translator.t(w)}
 end
