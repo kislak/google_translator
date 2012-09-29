@@ -82,12 +82,13 @@ t ||= 'Geben ist besser als nehmen'
 translator =  Translator.new
 #translator.t(URI.escape(t))
 
-while true
-  print '> '
-  s = gets.strip
-  exit if (s == 'exit')
-  next if s.include?('from ') && s.gsub!(/from /, '') && translator.sl = s
+require 'readline'
+
+loop do
+  s = Readline::readline('> ')
+  break if s == 'exit'
+  Readline::HISTORY.push(s)
+    next if s.include?('from ') && s.gsub!(/from /, '') && translator.sl = s
   next if s.include?('into ') && s.gsub!(/into /, '') && translator.tl = s
   s.split(' ').each{|w| translator.t(w)}
 end
-
