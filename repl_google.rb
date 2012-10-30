@@ -108,6 +108,12 @@ loop do
   s = Readline::readline('> ')
   break if s == 'exit'
   Readline::HISTORY.push(s)
+   
+  if s.match(/^rv$/) || s.match(/^ch$/)
+    translator.sl, translator.tl = translator.tl, translator.sl
+    next
+  end
+ 
   next if s.match(/^from /) && s.gsub!(/^from /, '') && translator.sl = s
   next if s.match(/^into /) && s.gsub!(/^into /, '') && translator.tl = s
   next if (s.match(/^exp /) || s == 'exp') && s.gsub!(/^exp/, '') && translator.exp(s)
