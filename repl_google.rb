@@ -52,7 +52,9 @@ class Translator
 
   private
   def ask_google(req)
-    JSON.parse(Net::HTTP.get_response('translate.google.com', req).body)
+    proxy = URI.parse(ENV['http_proxy'])
+    worker = proxy ? Net::HTTP::Proxy(proxy.host, proxy.port) : Net::HTTP
+    JSON.parse(worker.get_response('translate.google.com', req).body)
   end
 
   def print_result(result)
