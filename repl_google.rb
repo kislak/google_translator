@@ -93,16 +93,14 @@ class Translator
 end
 
 
-t = ARGV.count > 0 &&ARGV.join(' ')
-
 t ||= 'Erst die Arbeit, dann das Spiel'
 t ||= 'Einmal ist keinmal'
 t ||= 'Frische Fische - gute Fische'
 t ||= 'Geben ist besser als nehmen'
 
-
+t = (ARGV.count > 0 && ARGV.join(' '))
 translator =  Translator.new
-#translator.t(URI.escape(t))
+(translator.t(URI.escape(t)) && exit) if t
 
 require 'readline'
 
