@@ -38,7 +38,7 @@ class Translator
     text.strip!
     text = @last if text.empty?
     text = URI.encode(text)
-    req = "http://translate.google.by/translate_a/ex?sl=#{@sl}&tl=#{@tl}&q=#{text}"
+    req = "/translate_a/ex?sl=#{@sl}&tl=#{@tl}&q=#{text}"
     res = ask_google(req)[0][0]
     res && res.map{|e| [e.first, e[3]]}.each do |s, translation|
       s = s.split(/<b>|<\/b>/)
