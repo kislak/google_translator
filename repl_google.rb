@@ -103,6 +103,19 @@ translator =  Translator.new
 (translator.t(URI.escape(t)) && exit) if t
 
 require 'readline'
+require 'yaml'
+fname = 'google_translator.conf'
+
+
+parsed = begin
+  YAML.load(File.open(fname))
+rescue
+end
+
+if parsed
+  translator.sl = parsed[:sl]
+  translator.tl = parsed[:tl]
+end
 
 loop do
   s = Readline::readline('> ')
@@ -119,3 +132,10 @@ loop do
   next if (s.match(/^exp /) || s == 'exp') && s.gsub!(/^exp/, '') && translator.exp(s)
   s.split(' ').each{|w| translator.t(w)}
 end
+
+data = {
+  sl: translator.sl,
+  tl: translator.tl
+}
+
+File.open(fname, "w") {|f| f.write(data.to_yaml) }
