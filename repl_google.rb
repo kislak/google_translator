@@ -31,12 +31,11 @@ class Translator
     result = ask_google(req)
     @sl = result['src'] #remember language
     print_result(result)
-    @last = text
   end
 
   def exp(text = nil)
     text.strip!
-    text = @last if text.empty?
+    text ||= Readline::HISTORY.to_a.last
     text = URI.encode(text)
     req = "/translate_a/ex?sl=#{@sl}&tl=#{@tl}&q=#{text}"
     res = ask_google(req)[0][0]
@@ -120,6 +119,8 @@ end
 loop do
   s = Readline::readline('> ')
   break if s == 'exit'
+  next if (s == '') && Readline::HISTORY.to_a.last && translator.exp(Readline::HISTORY.to_a.last)
+
   Readline::HISTORY.push(s)
    
   if s.match(/^rv$/) || s.match(/^ch$/)
