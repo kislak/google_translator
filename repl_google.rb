@@ -103,7 +103,8 @@ translator =  Translator.new
 
 require 'readline'
 require 'yaml'
-fname = 'google_translator.conf'
+require 'tmpdir'
+fname = "#{Dir::tmpdir}/google_translator.conf"
 
 
 parsed = begin
